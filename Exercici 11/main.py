@@ -2,7 +2,7 @@ import csv
 from personal_shopper import PersonalShopper
 
 
-# ---------- FUNCIONS DE PERSISTÈNCIA ----------
+# ---------- FUNCIONS ----------
 
 def load_products(filename="products.csv"):
     products = []
@@ -52,9 +52,6 @@ def save_users(users, filename="users.csv"):
                 "perfil_complet": str(user["perfil_complet"]).lower()
             })
 
-
-# ---------- FUNCIONS DE DOMINI ----------
-
 def find_user_by_name(users, name):
     for user in users:
         if user["nom"].lower() == name.lower():
@@ -76,6 +73,35 @@ def complete_user_profile(user: dict):
     user["perfil_complet"] = True
 
     print("Perfil completat correctament.")
+
+
+
+def calcular_preu_comanda(peces_seleccionades, peces_que_es_queda, primera_comanda):
+    """
+    peces_seleccionades: llista de peces (outfit complet)
+    peces_que_es_queda: nombre de peces que el client es queda
+    primera_comanda: bool
+    """
+    if peces_que_es_queda == 0:
+        if primera_comanda:
+            return 0.0
+        return 10.0
+
+    total_roba = sum(
+        p["preu"] for p in peces_seleccionades[:peces_que_es_queda]
+    )
+
+    if primera_comanda:
+        return total_roba
+
+    if peces_que_es_queda == 5:
+        total_roba *= 0.75  # 25% descompte
+        total_roba -= 10
+    else:
+        total_roba -= 10
+
+    return max(total_roba, 0.0)
+
 
 
 # ---------- MAIN ----------
@@ -159,6 +185,21 @@ def main():
                     f"Preu: {p['preu']} €"
                 )
 
+            print("\nQuantes peces et vols quedar? (0 - 5)")
+            peces_que_es_queda = int(input("> ").strip())
+            
+            preu_final = calcular_preu_comanda(
+                outfit,
+                peces_que_es_queda,
+                user["primera_comanda"]
+            )
+            if user["primera_comanda"] == True:
+                user["primera_comanda"] = False
+            print("\n--- RESUM DE LA COMANDA ---")
+            print(f"Peces seleccionades: {len(outfit)}")
+            print(f"Peces que et quedes: {peces_que_es_queda}")
+            print(f"Import final a pagar: {preu_final:.2f} €")
+
         elif option == "2":
             print("\n--- Contacte amb el teu Personal Shopper ---")
             message = input("Introdueix el teu missatge (o deixa-ho buit per obtenir el contacte): ").strip()
@@ -206,14 +247,6 @@ def main():
         else:
             print("\nOpció no vàlida. Torna-ho a intentar.")
         print("=" * 60)
-
-
-if __name__ == "__main__":
-    main()
-
-
-        else:
-            print("\nOpció no vàlida. Torna-ho a intentar.")
 
 
 if __name__ == "__main__":
