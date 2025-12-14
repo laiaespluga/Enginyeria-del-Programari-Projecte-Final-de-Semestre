@@ -205,6 +205,15 @@ def main():
 
         else:
             print("\nOpció no vàlida. Torna-ho a intentar.")
+        print("=" * 60)
+
+
+if __name__ == "__main__":
+    main()
+
+
+        else:
+            print("\nOpció no vàlida. Torna-ho a intentar.")
 
 
 if __name__ == "__main__":
