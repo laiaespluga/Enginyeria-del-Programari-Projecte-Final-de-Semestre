@@ -9,32 +9,68 @@ class PersonalShopper:
         talla = user_profile["talla"]
         estils = user_profile["estils_preferits"]
 
-        # 1 Intentar trobar 5 peces d'un sol estil
+        selected = []
+        used_categories = set()
+
+        # 1 Intentar trobar peces d'un sol estil
         for estil in estils:
-            same_style = [
-                p for p in products
-                if p["talla"] == talla and p["estil"] == estil
-            ]
-            if len(same_style) >= 5:
-                return random.sample(same_style, 5)
+            for p in products:
+                if p["talla"] != talla or p["estil"] != estil:
+                    continue
+
+                if p["categoria"] in ["superior", "inferior", "calçat"]:
+                    if p["categoria"] in used_categories:
+                        continue
+                    used_categories.add(p["categoria"])
+
+                selected.append(p)
+                if len(selected) == 5:
+                    return selected
 
         # 2 Barrejar només estils preferits
-        preferred_style_products = [
-            p for p in products
-            if p["talla"] == talla and p["estil"] in estils
-        ]
+        for p in products:
+            if p["talla"] != talla or p["estil"] not in estils:
+                continue
 
-        if len(preferred_style_products) >= 5:
-            return random.sample(preferred_style_products, 5)
+            if p in selected:
+                continue
 
-        # 3 Fallback: qualsevol peça de la mateixa talla
-        same_size_products = [
-            p for p in products
-            if p["talla"] == talla
-        ]
+            if p["categoria"] in ["superior", "inferior", "calçat"]:
+                if p["categoria"] in used_categories:
+                    continue
+                used_categories.add(p["categoria"])
 
-        return random.sample(
-            same_size_products,
-            min(5, len(same_size_products))
-        )
+            selected.append(p)
+            if len(selected) == 5:
+                return selected
 
+        # 3 Preguntar si vol completar amb altres estils
+        if len(selected) < 5:
+            print(
+                "No hi ha més peces del teu estil."
+            )
+            choice = input(
+                f"Vols fer la comanda amb {len(selected)}? "
+            ).strip().lower()
+        
+            if choice != "5":
+                return selected
+
+        # 4 Fallback: qualsevol peça de la mateixa talla
+        for p in products:
+            if p["talla"] != talla:
+                continue
+
+            if p in selected:
+                continue
+
+            if p["categoria"] in ["superior", "inferior", "calçat"]:
+                if p["categoria"] in used_categories:
+                    continue
+                used_categories.add(p["categoria"])
+
+            selected.append(p)
+            if len(selected) == 5:
+                break
+
+        return selected
