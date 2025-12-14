@@ -36,46 +36,59 @@ def crear_users_csv():
 # FUNCIÓ 2: crear products.csv
 # -----------------------------
 def crear_products_csv():
-    TIPUS = [
+    # Diccionari amb tipus de peça, possibles estils i categoria
+    TIPUS_ESTILS_CATEGORIA = {
         # roba superior
-        "samarreta", "camisa", "americana", "jaqueta",
+        "samarreta": (["casual", "sport"], "superior"),
+        "camisa": (["formal", "elegant", "casual"], "superior"),
+        "americana": (["formal", "elegant"], "superior"),
+        "jaqueta": (["casual", "sport", "elegant"], "superior"),
+        "sudadera": (["casual", "sport"], "superior"),
+        "top": (["casual", "formal"], "superior"),
 
         # roba inferior
-        "pantalons", "texans", "xandall",
+        "pantalons": (["formal", "elegant", "casual"], "inferior"),
+        "texans": (["casual", "sport"], "inferior"),
+        "xandall": (["casual", "sport"], "inferior"),
+        "faldilla": (["formal","elegant"], "inferior"),
 
         # peces completes
-        "vestit",
+        "vestit": (["formal", "elegant"], "superior"),
 
         # calçat
-        "sabates",
+        "sabates": (["formal", "elegant"], "calçat"),
+        "vamba": (["formal", "elegant"], "calçat"),
+        "botes": (["formal", "elegant"], "calçat"),
 
         # accessoris
-        "ulleres", "barret", "guants"
-    ]
+        "ulleres": (["casual", "elegant", "sport"], "accessoris"),
+        "barret": (["casual", "elegant", "sport"], "accessoris"),
+        "gorra": (["casual", "sport"], "accessoris"),
+        "guants": (["elegant", "casual", "sport"], "accessoris")
+    }
 
+    TIPUS = list(TIPUS_ESTILS_CATEGORIA.keys())
     TALLES = ["S", "M", "L", "XL"]
-    ESTILS = ["casual", "formal", "sport", "elegant"]
-
     PREUS = [
         19.99, 29.99, 39.99,
         49.99, 59.99,
         79.99, 99.99, 129.99
     ]
 
-    NUM_PRODUCTES = 20
+    NUM_PRODUCTES = 30
 
     with open("products.csv", mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow(["id", "tipus", "talla", "estil", "preu"])
+        # Headers en minúscula
+        writer.writerow(["id", "tipus", "talla", "estil", "preu", "categoria"])
 
         for i in range(1, NUM_PRODUCTES + 1):
-            writer.writerow([
-                i,
-                random.choice(TIPUS),
-                random.choice(TALLES),
-                random.choice(ESTILS),
-                random.choice(PREUS)
-            ])
+            tipus = random.choice(TIPUS)
+            estils_possibles, categoria = TIPUS_ESTILS_CATEGORIA[tipus]
+            estil = random.choice(estils_possibles)
+            talla = random.choice(TALLES)
+            preu = random.choice(PREUS)
+            writer.writerow([i, tipus, talla, estil, preu, categoria])
 
     print("products.csv creat correctament")
 
