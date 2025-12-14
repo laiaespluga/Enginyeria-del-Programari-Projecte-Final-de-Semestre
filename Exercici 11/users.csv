@@ -1,0 +1,5 @@
+id,nom,email,talla,estils_preferits,primera_comanda,perfil_complet
+1,Joan Campoy,joan.campoy@email.com,M,casual|sport,True,True
+2,Maria Soler,maria.soler@email.com,S,elegant|formal,False,True
+3,Alex Riera,alex.riera@email.com,L,casual,False,False
+4,Laura Puig,laura.puig@email.com,M,formal|elegant,True,True
