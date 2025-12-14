@@ -75,20 +75,28 @@ def crear_products_csv():
         79.99, 99.99, 129.99
     ]
 
-    NUM_PRODUCTES = 30
+    NUM_PRODUCTES = 40
 
     with open("products.csv", mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        # Headers en minúscula
         writer.writerow(["id", "tipus", "talla", "estil", "preu", "categoria"])
-
-        for i in range(1, NUM_PRODUCTES + 1):
+    
+        product_id = 1
+    
+        for _ in range(NUM_PRODUCTES):
             tipus = random.choice(TIPUS)
             estils_possibles, categoria = TIPUS_ESTILS_CATEGORIA[tipus]
             estil = random.choice(estils_possibles)
-            talla = random.choice(TALLES)
             preu = random.choice(PREUS)
-            writer.writerow([i, tipus, talla, estil, preu, categoria])
+    
+            if categoria == "accessoris":
+                for talla in TALLES:
+                    writer.writerow([product_id, tipus, talla, estil, preu, categoria])
+                    product_id += 1
+            else:
+                talla = random.choice(TALLES)
+                writer.writerow([product_id, tipus, talla, estil, preu, categoria])
+                product_id += 1
 
     print("products.csv creat correctament")
 
@@ -103,3 +111,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
